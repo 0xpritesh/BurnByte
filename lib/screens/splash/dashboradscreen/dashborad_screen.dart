@@ -19,6 +19,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen>
     with SingleTickerProviderStateMixin {
   int _steps = 0;
+  int _goalSteps = 10000;
   double _calories = 0.0;
   double _distance = 0.0;
 
@@ -55,7 +56,8 @@ class _DashboardScreenState extends State<DashboardScreen>
     final now = DateTime.now();
     int index = now.day % _backgroundGradients.length;
     _bgStartColor = _backgroundGradients[index];
-    _bgEndColor = _backgroundGradients[(index + 1) % _backgroundGradients.length];
+    _bgEndColor =
+        _backgroundGradients[(index + 1) % _backgroundGradients.length];
   }
 
   Future<void> _requestPermissions() async {
@@ -114,24 +116,32 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Future<void> _loadSavedData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  final prefs = await SharedPreferences.getInstance();
+  final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-    if (prefs.getString('lastDate') == today) {
-      setState(() {
-        _steps = prefs.getInt('steps') ?? 0;
-        _calories = prefs.getDouble('calories') ?? 0.0;
-        _distance = prefs.getDouble('distance') ?? 0.0;
-      });
-    }
+  setState(() {
+    _goalSteps = prefs.getInt('daily_goal') ?? 10000;
+  });
+
+  if (prefs.getString('lastDate') == today) {
+    setState(() {
+      _steps = prefs.getInt('steps') ?? 0;
+      _calories = prefs.getDouble('calories') ?? 0.0;
+      _distance = prefs.getDouble('distance') ?? 0.0;
+    });
   }
+}
+
 
   void _initAnimation() {
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
-    _animation = Tween<double>(begin: 0.95, end: 1.05).animate(_animationController);
+    _animation = Tween<double>(
+      begin: 0.95,
+      end: 1.05,
+    ).animate(_animationController);
   }
 
   @override
@@ -140,8 +150,13 @@ class _DashboardScreenState extends State<DashboardScreen>
     super.dispose();
   }
 
-  Widget _buildInfoCard(String label, String value, IconData icon, Color color,
-      VoidCallback onTap) {
+  Widget _buildInfoCard(
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Card(
@@ -162,15 +177,22 @@ class _DashboardScreenState extends State<DashboardScreen>
             children: [
               Icon(icon, size: 30, color: color),
               const SizedBox(height: 10),
-              Text(label,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600)),
+              Text(
+                label,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               const SizedBox(height: 6),
-              Text(value,
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: color)),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+              ),
             ],
           ),
         ),
@@ -182,7 +204,42 @@ class _DashboardScreenState extends State<DashboardScreen>
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
+    return Scaffold(extendBodyBehindAppBar: true,
+  appBar: AppBar(
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    actions: [
+      IconButton(
+        icon: const Icon(Icons.logout, color: Colors.black),
+        tooltip: 'Logout',
+        onPressed: () async {
+          bool? confirm = await showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text("Logout"),
+              content: const Text("Are you sure you want to logout?"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: const Text("Logout"),
+                ),
+      ]));
+                      if (confirm == true) {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.clear();
+            if (context.mounted) {
+              Navigator.pushReplacementNamed(context, '/login'); // Make sure this route is set
+            }
+          }
+        },
+      )
+    ],
+  ),
+
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -197,9 +254,13 @@ class _DashboardScreenState extends State<DashboardScreen>
             child: Column(
               children: [
                 const SizedBox(height: 10),
-                Text("$_day, $_date",
-                    style:
-                        const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                Text(
+                  "$_day, $_date",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 const SizedBox(height: 20),
                 ScaleTransition(
                   scale: _animation,
@@ -209,27 +270,32 @@ class _DashboardScreenState extends State<DashboardScreen>
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: const LinearGradient(
-                          colors: [Colors.purple, Colors.deepPurpleAccent]),
+                        colors: [Colors.purple, Colors.deepPurpleAccent],
+                      ),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.purple.withOpacity(0.4),
                           blurRadius: 20,
                           spreadRadius: 4,
-                        )
+                        ),
                       ],
                     ),
                     alignment: Alignment.center,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("Steps",
-                            style:
-                                TextStyle(color: Colors.white70, fontSize: 20)),
-                        Text("$_steps",
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 36,
-                                fontWeight: FontWeight.bold)),
+                        const Text(
+                          "Steps",
+                          style: TextStyle(color: Colors.white70, fontSize: 20),
+                        ),
+                        Text(
+                          "$_steps",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -242,38 +308,54 @@ class _DashboardScreenState extends State<DashboardScreen>
                     mainAxisSpacing: 16,
                     children: [
                       _buildInfoCard(
-                          "Calories",
-                          "${_calories.toStringAsFixed(2)} kcal",
-                          Icons.local_fire_department,
-                          Colors.orange, () {
-                        Navigator.push(
+                        "Calories",
+                        "${_calories.toStringAsFixed(2)} kcal",
+                        Icons.local_fire_department,
+                        Colors.orange,
+                        () {
+                          Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (_) => const Calories()));
-                      }),
-                      _buildInfoCard("Distance", "${_distance.toStringAsFixed(2)} km",
-                          Icons.map, Colors.blue, () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const Distance()));
-                      }),
-                      _buildInfoCard("Goal", "10,000 steps", Icons.flag,
-                          Colors.green, () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const Goal()));
-                      }),
+                            MaterialPageRoute(builder: (_) => const Calories()),
+                          );
+                        },
+                      ),
                       _buildInfoCard(
-                          "Progress",
-                          "${((_steps / 10000) * 100).toStringAsFixed(1)}%",
-                          Icons.show_chart,
-                          Colors.teal, () {
-                        Navigator.push(
+                        "Distance",
+                        "${_distance.toStringAsFixed(2)} km",
+                        Icons.map,
+                        Colors.blue,
+                        () {
+                          Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (_) => const Progress()));
-                      }),
+                            MaterialPageRoute(builder: (_) => const Distance()),
+                          );
+                        },
+                      ),
+                      _buildInfoCard(
+                        "Goal",
+                        "${_goalSteps.toString()} steps",
+                        Icons.flag,
+                        Colors.green,
+                        () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const Goal()),
+                          ).then((_) => _loadSavedData()); // Refresh on return
+                        },
+                      ),
+
+                      _buildInfoCard(
+                        "Progress",
+                        "${((_steps / _goalSteps) * 100).clamp(0, 100).toStringAsFixed(1)}%",
+                        Icons.show_chart,
+                        Colors.teal,
+                        () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const Progress()),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),

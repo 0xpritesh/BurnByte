@@ -19,8 +19,7 @@ class StepTrackerService {
     _stepCountStream = Pedometer.stepCountStream;
     _pedestrianStatusStream = Pedometer.pedestrianStatusStream;
 
-    _stepCountStream.listen(_onStepCount).onError(_onStepCountError);
-    _pedestrianStatusStream.listen(_onPedestrianStatusChanged).onError(_onPedestrianStatusError);
+    _stepCountStream.listen(_onStepCount).onError(_onStepCountError);    _pedestrianStatusStream.listen(_onPedestrianStatusChanged).onError(_onPedestrianStatusError);
   }
 
   void _onStepCount(StepCount event) {

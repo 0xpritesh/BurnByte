@@ -13,9 +13,12 @@ class LoginScreen extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.deepPurple, Colors.purpleAccent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF008080), // Teal
+              Color(0xFF4B0082), // Indigo
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: Center(
@@ -26,12 +29,7 @@ class LoginScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 child: Container(
                   padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                   
-                    borderRadius: BorderRadius.circular(20),
-                    
                   
-                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -50,7 +48,7 @@ class LoginScreen extends StatelessWidget {
                           labelText: "Email",
                           prefixIcon: const Icon(Icons.email),
                           filled: true,
-                          fillColor: Colors.grey[100],
+                          fillColor: Colors.white.withOpacity(0.9),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -64,7 +62,7 @@ class LoginScreen extends StatelessWidget {
                           labelText: "Password",
                           prefixIcon: const Icon(Icons.lock),
                           filled: true,
-                          fillColor: Colors.grey[100],
+                          fillColor: Colors.white.withOpacity(0.9),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -76,7 +74,7 @@ class LoginScreen extends StatelessWidget {
                           : ElevatedButton(
                               onPressed: () => authController.loginUser(),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.deepPurple,
+                            backgroundColor: Colors.deepPurple,
                                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -84,7 +82,7 @@ class LoginScreen extends StatelessWidget {
                               ),
                               child: const Text(
                                 "Login",
-                                style: TextStyle(fontSize: 16,color: Colors.white),
+                                style: TextStyle(fontSize: 16, color: Colors.white),
                               ),
                             )),
                       const SizedBox(height: 20),
@@ -93,7 +91,7 @@ class LoginScreen extends StatelessWidget {
                         child: const Text(
                           "Don't have an account? Sign Up",
                           style: TextStyle(
-                             color: Colors.white,
+                            color: Colors.white,
                             fontWeight: FontWeight.w600,
                           ),
                         ),

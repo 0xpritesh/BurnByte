@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants/colors.dart';
@@ -16,28 +17,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentIndex = 0;
 
-  final List<Map<String, String>> onboardingData = [
-    {
-      "title": "Track Your Fitness",
-      "desc": "Stay updated with your daily activities and progress.",
-      "image": "assets/images/onboarding1.png",
-    },
-    {
-      "title": "Set Daily Goals",
-      "desc": "Set and achieve your personal fitness goals.",
-      "image": "assets/images/onboarding2.png",
-    },
-    {
-      "title": "Measure Calories",
-      "desc": "Keep track of calories burned every day.",
-      "image": "assets/images/onboarding3.png",
-    },
-    {
-      "title": "Step Counter",
-      "desc": "Monitor your daily steps with accuracy.",
-      "image": "assets/images/onboarding4.png",
-    },
-  ];
+ final List<Map<String, String>> onboardingData = [
+  {
+    "title": "Track Your Fitness",
+    "desc": "Stay updated with your daily activities and progress.",
+    "lottie": "https://lottie.host/6196b6af-7f95-446c-b223-db5f1c1b5f44/EUC8RmRvZ1.json",
+  },
+  {
+    "title": "Set Daily Goals",
+    "desc": "Set and achieve your personal fitness goals.",
+    "lottie": "https://lottie.host/45e245f5-9f41-432f-84ca-ea7c42c92c90/fmXExsfzgs.json",
+  },
+  {
+    "title": "Measure Calories",
+    "desc": "Keep track of calories burned every day.",
+    "lottie": "https://lottie.host/043f0a4b-5f84-4df2-b250-8f5fb5f8ee99/mZj13KlziA.json",
+  },
+  {
+    "title": "Step Counter",
+    "desc": "Monitor your daily steps with accuracy.",
+    "lottie": "https://lottie.host/0072967b-0002-433c-91ae-3cc68cf9c26d/TP3Ezr6HSm.json",
+  },
+];
+
 
   void _onFinish() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -51,27 +53,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _buildPageContent(Map<String, String> data) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Image.asset(data["image"]!, height: 250),
-        const SizedBox(height: 30),
-        Text(
-          data["title"]!,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Lottie.network(data["lottie"]!, height: 250),
+      const SizedBox(height: 30),
+      Text(
+        data["title"]!,
+        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold,color: Colors.white),
+      ),
+      const SizedBox(height: 15),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Text(
+          data["desc"]!,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 16, color: Colors.grey),
         ),
-        const SizedBox(height: 15),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Text(
-            data["desc"]!,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 16, color: Colors.grey),
-          ),
-        ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
 
   Widget _buildIndicators() {
     return Row(
@@ -98,7 +101,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      body: SafeArea(
+      body:Container(
+   decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF008080), // Teal
+              Color(0xFF4B0082), // Indigo
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+  child: SafeArea(
         child: Column(
           children: [
             Expanded(
@@ -108,7 +122,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 onPageChanged: (index) {
                   setState(() => _currentIndex = index);
                 },
-                itemBuilder: (_, index) => _buildPageContent(onboardingData[index]),
+                itemBuilder: (_, index) =>
+                    _buildPageContent(onboardingData[index]),
               ),
             ),
             _buildIndicators(),
@@ -125,7 +140,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         );
                       },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor,
+                            backgroundColor: Colors.deepPurple,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   minimumSize: const Size.fromHeight(50),
                 ),
@@ -139,6 +154,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

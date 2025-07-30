@@ -1,11 +1,9 @@
 import 'dart:async';
-
 import 'package:burnbyte/screens/auth/login_screen.dart';
 import 'package:burnbyte/screens/splash/dashboradscreen/dashborad_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -36,28 +34,39 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.deepPurple,
-      body: 
-      Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.health_and_safety, size: 100, color: Colors.white),
-            SizedBox(height: 20),
-            Text(
-              "Burn & Byte",
-              style: TextStyle(
-                fontSize: 26,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+    return Scaffold(
+      body: Container(
+                decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF008080), // Teal
+              Color(0xFF4B0082), // Indigo
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.health_and_safety, size: 100, color: Colors.white),
+              SizedBox(height: 20),
+              Text(
+                "Burn & Byte",
+                style: TextStyle(
+                  fontSize: 26,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            SizedBox(height: 10),
-            CircularProgressIndicator(color: Colors.white),
-          ],
+              SizedBox(height: 10),
+              CircularProgressIndicator(color: Colors.white),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
